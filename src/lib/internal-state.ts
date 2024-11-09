@@ -1,5 +1,6 @@
 import {SetStateAction} from "react";
 import {AppStateContextValue} from "./create-app-state";
+import {Tx} from "./types";
 
 
 interface AppStateContextInternalState<T> {
@@ -34,8 +35,10 @@ export function initInstanceInternalState<T>(initialValue: T | (() => T)): AppSt
     }
   }
 
-  const select = <S>(selector: (value: T) => S) => selector(internalState.value)
-
+  const select = <S = T>(selector?: Tx<T, S>): S => {
+    const result = selector ? selector(internalState.value) : internalState.value
+    return result as S
+  }
 
   return {dispatch, select, subscribe}
 }

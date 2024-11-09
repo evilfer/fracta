@@ -24,7 +24,7 @@ describe('create app state', () => {
       const useSelectValue = deriveStateSelector(useSelect, state => state.value)
 
       const Consumer = jest.fn(() => {
-        const value = useSelectValue()
+        const value = useSelectValue(undefined)
         return <div data-testid={'consumer-root'}>{value}</div>
       })
 
@@ -383,6 +383,61 @@ describe('create app state', () => {
       expect(Consumer).not.toHaveBeenCalled()
       expect(Wrapper).not.toHaveBeenCalled()
       expect(getByTestId('consumer-value')).toHaveTextContent('a')
+    })
+
+    test('should ignore unselected changes to state for nested selectors', () => {
+      const [Provider, useSelect, useUpdate] = createFractaStore({count: 10, name: 'a'})
+      const useSelectName = deriveStateSelector(useSelect, state => state.name)
+      const useSelectNameLength = deriveStateSelector(useSelectName, state => state.length)
+
+      const Wrapper = jest.fn(() => {
+        const update = useUpdate()
+
+        return (
+          <div>
+            <button data-testid={'updater-button-b'} onClick={() => {
+              update(prev => ({...prev, name: 'b'}))
+            }}>update
+            </button>
+            <button data-testid={'updater-button-ab'} onClick={() => {
+              update(prev => ({...prev, name: 'ab'}))
+            }}>update
+            </button>
+            <Consumer/>
+          </div>
+        )
+      })
+
+      const Consumer = jest.fn(() => {
+        const name = useSelectNameLength()
+        return (
+          <div data-testid={'consumer-value'}>{name}</div>
+        )
+      })
+
+      const {getByTestId} = render(
+        <Provider>
+          <Wrapper/>
+        </Provider>
+      )
+
+      expect(Consumer).toHaveBeenCalledTimes(1)
+      expect(Wrapper).toHaveBeenCalledTimes(1)
+      expect(getByTestId('consumer-value')).toHaveTextContent('1')
+
+      jest.clearAllMocks()
+
+      fireEvent.click(getByTestId('updater-button-b'))
+      expect(Consumer).not.toHaveBeenCalled()
+      expect(Wrapper).not.toHaveBeenCalled()
+      expect(getByTestId('consumer-value')).toHaveTextContent('1')
+
+      jest.clearAllMocks()
+
+      fireEvent.click(getByTestId('updater-button-ab'))
+      expect(Consumer).toHaveBeenCalledTimes(1)
+      expect(Wrapper).not.toHaveBeenCalled()
+      expect(getByTestId('consumer-value')).toHaveTextContent('2')
     })
   })
 })

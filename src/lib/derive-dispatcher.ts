@@ -51,4 +51,3 @@ export function derivePropStateAction<Prop extends string, T extends PropRecordC
     dispatch(action(...args))
   }
 }
-

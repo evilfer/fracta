@@ -1,13 +1,13 @@
 import React, {createContext, Dispatch, SetStateAction, useContext, useEffect, useRef, useState} from "react";
 import {initInstanceInternalState} from "./internal-state";
-import {StateProvider, StateSelectHook, StateSetterHook} from "./types";
+import {StateProvider, StateSelectHook, StateSetterHook, Tx} from "./types";
 import {useConstant} from "./use-constant";
 import {useTrackingRef} from "./use-tracking-ref";
 
 
 export interface AppStateContextValue<T> {
   dispatch: Dispatch<SetStateAction<T>>
-  select: <S, >(selector: (value: T) => S) => S
+  select: StateSelectHook<T>
   subscribe: (listener: () => void) => (() => void)
 }
 
@@ -42,7 +42,7 @@ export function createFractaStore<T>(initialValue: T | (() => T)): [StateProvide
   }
 
 
-  const useSelect: StateSelectHook<T> = (selector) => {
+  const useSelect: StateSelectHook<T> = <S = T>(selector?: Tx<T, S>): S => {
     const {select, subscribe} = useContext(Context)
     const valueForRender = select(selector)
 

@@ -1,10 +1,11 @@
 import React from "react";
-import {createFractaStore, derivePropStateUpdate} from "../lib";
+import {createFractaStore, derivePropSelector, derivePropStateUpdate} from "../lib";
 
 
 const [Provider, useSelect, useDispatch] = createFractaStore({count: 1, name: 'world', count2: 10})
 
 const useUpdateCount = derivePropStateUpdate(useDispatch, 'count')
+const useCount = derivePropSelector(useSelect, 'count')
 
 export function App() {
   return (
@@ -44,7 +45,7 @@ function Child2() {
 
 
 function Child3() {
-  const value1 = useSelect(v => v.count)
+  const value1 = useCount()
   const value2 = useSelect(v => v.count2)
   const dispatch = useDispatch()
 

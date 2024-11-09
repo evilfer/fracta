@@ -1,0 +1,12 @@
+echo "Checking for untracked changes..."
+git diff --quiet
+
+echo "Checking for staged changes..."
+git diff --quiet --cached
+
+echo "Checking node version..."
+node --version | grep "v22"
+
+npm run lint
+npm run validate-types
+npm run test

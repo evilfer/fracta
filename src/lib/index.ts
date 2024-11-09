@@ -11,7 +11,5 @@ export {
 
 export {
   deriveStateSelector,
-  deriveIdentityStateSelector,
   derivePropSelector,
-  transformSelector
 } from "./derive-selector"

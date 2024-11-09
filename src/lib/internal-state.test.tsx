@@ -8,6 +8,12 @@ describe('initInstanceInternalState', () => {
     expect(result).toEqual(10)
   })
 
+  test('should provide select with undefined selector', () => {
+    const {select} = initInstanceInternalState({value: 10})
+    const result = select(undefined)
+    expect(result).toEqual({value: 10})
+  })
+
   test('should initialise with function', () => {
     const {select} = initInstanceInternalState(() => ({value: 20}))
     const result = select(state => state.value)
