@@ -34,4 +34,4 @@ jobs:
       - name: install dependencies
         run: npm ci
       - name: check version
-        run: echo "Package version $(awk -F'"' '/"version": ".+"/{ print $4; exit; }' package.json)"
+        run: echo Package version $(awk -F'"' '/"version": ".+"/{ print $4; exit; }' package.json)
