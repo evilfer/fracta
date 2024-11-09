@@ -31,6 +31,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22.x'
+          registry-url: 'https://registry.npmjs.org'
       - name: install dependencies
         run: npm ci
       - name: check versions
@@ -38,4 +39,9 @@ jobs:
          PV=$(awk -F'"' '/"version": ".+"/{ print $4; exit; }' package.json)
          TV=${{github.ref}}
          echo Package version: ${PV}, tag: ${TV}
-         [[ "${PV/refs\/tags\/v/}" = "${TV}" ]]
+         [[ "${TV/refs\/tags\/v/}" = "${PV}" ]]
+      - name: npm publish
+        run: npm publish --provenance --public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
