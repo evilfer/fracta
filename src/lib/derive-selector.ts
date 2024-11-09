@@ -12,3 +12,7 @@ export function deriveIdentityStateSelector<T>(useSelect: StateSelectHook<T>): (
 export function derivePropSelector<Prop extends string, T extends PropRecordContainer<Prop, T>>(useSelect: StateSelectHook<T>, key: Prop) {
   return deriveStateSelector(useSelect, v => v[key])
 }
+
+export function transformSelector<T, S>(selector: () => T, tx: (value: T) => S): () => S {
+  return () => tx(selector())
+}

@@ -1,13 +1,14 @@
 import {
   createFractaStore,
   deriveIdentityStateSelector,
-  derivePropSelector,
-  deriveStateSelector,
-  derivePartialStateUpdate,
-  derivePropStateUpdate,
   derivePartialStateAction,
+  derivePartialStateUpdate,
+  derivePropSelector,
   derivePropStateAction,
-  deriveStateAction
+  derivePropStateUpdate,
+  deriveStateAction,
+  deriveStateSelector,
+  transformSelector
 } from "./index";
 
 describe('index exports', () => {
@@ -21,5 +22,6 @@ describe('index exports', () => {
     expect(derivePartialStateAction).toEqual(expect.any(Function))
     expect(derivePropStateAction).toEqual(expect.any(Function))
     expect(deriveStateAction).toEqual(expect.any(Function))
+    expect(transformSelector).toEqual(expect.any(Function))
   })
 })

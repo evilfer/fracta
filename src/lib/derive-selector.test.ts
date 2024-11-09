@@ -1,4 +1,9 @@
-import {deriveIdentityStateSelector, derivePropSelector, deriveStateSelector} from "./derive-selector";
+import {
+  deriveIdentityStateSelector,
+  derivePropSelector,
+  deriveStateSelector,
+  transformSelector
+} from "./derive-selector";
 import {StateSelectHook} from "./types";
 
 
@@ -48,4 +53,15 @@ describe('combine selectors', () => {
     })
   })
 
+  describe('transformSelector', () => {
+    test('should combine selector and transformation', () => {
+      const useSelector = () => "bla"
+      const tx = (value: string) => value.length
+
+      const useTxSelector = transformSelector(useSelector, tx)
+
+      const result = useTxSelector()
+      expect(result).toEqual(3)
+    })
+  })
 })
