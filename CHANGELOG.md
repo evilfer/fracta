@@ -1,3 +1,7 @@
+## 0.0.4 (November 9, 2024)
+
+- Fixed issue with published package contents.
+
 ## 0.0.3 (November 9, 2024)
 
 - Refactored select hooks. `useSelect` and derived selectors how accept optionally an

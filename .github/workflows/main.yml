@@ -37,13 +37,15 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
       - name: install dependencies
         run: npm ci
+      - name: build package
+        run: npm run build
       - name: check versions
         run: |
          PV=$(awk -F'"' '/"version": ".+"/{ print $4; exit; }' package.json)
          TV=${{github.ref}}
          echo Package version: ${PV}, tag: ${TV}
          [[ "${TV/refs\/tags\/v/}" = "${PV}" ]]
-      - name: npm publish
+      - name: publish package
         run: npm publish --provenance --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
