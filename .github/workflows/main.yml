@@ -33,7 +33,9 @@ jobs:
           node-version: '22.x'
       - name: install dependencies
         run: npm ci
-      - name: check version
+      - name: check version package
         run: >
-         echo Package version $(awk -F'"' '/"version": ".+"/{ print $4; exit; }' package.json) && \
+         echo Package version $(awk -F'"' '/"version": ".+"/{ print $4; exit; }' package.json)
+      - name: check tag package
+        run: >
          echo Tag version: ${{github.ref}}
