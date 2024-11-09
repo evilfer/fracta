@@ -36,4 +36,4 @@ jobs:
       - name: check version
         run: >
          echo Package version $(awk -F'"' '/"version": ".+"/{ print $4; exit; }' package.json) && \
-         echo Tag version: ${github.ref}
+         echo Tag version: ${{github.ref}}
