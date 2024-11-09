@@ -24,7 +24,7 @@ const [CounterProvider, useSelect, useUpdate] = createFractaStore({count: 0})
 
 export {CounterProvider}
 export const useSelectCount = deriveStateSelector(useSelect, state => state.count)
-export const useIncrementCount = derivePropStateUpdate(useUpdate, 'count') 
+export const useUpdateCount = derivePropStateUpdate(useUpdate, 'count') 
 ```
 
 - `App.tsx`
@@ -47,14 +47,14 @@ export function App() {
 
 ```typescript jsx
 // Consumer.tsx
-import {useSelectCount, useIncrementCount} from "./store"
+import {useSelectCount, useUpdateCount} from "./store"
 
 export function Consumer() {
   const count = useSelectCount()
-  const incrementCount = useIncrementCount()
+  const updateCount = useUpdateCount()
 
   return (
-    <button onClick={() => incrementCount()}>
+    <button onClick={() => useUpdateCount(prev => prev + 1)}>
       increment ({count})
     </button>
   )

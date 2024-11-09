@@ -4,7 +4,10 @@ import {
   derivePropSelector,
   deriveStateSelector,
   derivePartialStateUpdate,
-  derivePropStateUpdate
+  derivePropStateUpdate,
+  derivePartialStateAction,
+  derivePropStateAction,
+  deriveStateAction
 } from "./index";
 
 describe('index exports', () => {
@@ -15,5 +18,8 @@ describe('index exports', () => {
     expect(deriveStateSelector).toEqual(expect.any(Function))
     expect(derivePropSelector).toEqual(expect.any(Function))
     expect(deriveIdentityStateSelector).toEqual(expect.any(Function))
+    expect(derivePartialStateAction).toEqual(expect.any(Function))
+    expect(derivePropStateAction).toEqual(expect.any(Function))
+    expect(deriveStateAction).toEqual(expect.any(Function))
   })
 })

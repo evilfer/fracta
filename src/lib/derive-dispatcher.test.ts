@@ -1,4 +1,11 @@
-import {derivePartialStateDispatch, derivePropStateDispatch, derivePartialStateUpdate, derivePropStateUpdate} from "./derive-dispatcher";
+import {
+  derivePartialStateAction,
+  derivePartialStateDispatch,
+  derivePartialStateUpdate, derivePropStateAction,
+  derivePropStateDispatch,
+  derivePropStateUpdate,
+  deriveStateAction
+} from "./derive-dispatcher";
 
 describe('combine dispatchers', () => {
   interface MockState {
@@ -81,6 +88,102 @@ describe('combine dispatchers', () => {
 
       useDispatcher()(prev => prev + 2)
       expect(mockState.value).toEqual({other: '-', value: 15})
+    })
+  })
+
+  describe('deriveStateAction', () => {
+    test('should generate action function', () => {
+      const useOriginalDispatcher = () => originalDispatcher
+
+      const useAction = deriveStateAction(useOriginalDispatcher, () => (prev => ({...prev, value: prev.value + 1})))
+
+      useAction()
+
+      expect(originalDispatcher).toHaveBeenCalledTimes(1)
+      expect(mockState.value).toEqual({other: '-', value: 1})
+    })
+
+    test('should generate action function with parameters', () => {
+      const useOriginalDispatcher = () => originalDispatcher
+
+      const useAction = deriveStateAction(useOriginalDispatcher, (inc: number) => (prev => ({
+        ...prev,
+        value: prev.value + inc
+      })))
+
+      useAction(1)
+      useAction(3)
+
+      expect(originalDispatcher).toHaveBeenCalledTimes(2)
+      expect(mockState.value).toEqual({other: '-', value: 4})
+    })
+  })
+
+  describe('derivePartialStateAction', () => {
+    test('should generate action function', () => {
+      const useOriginalDispatcher = () => originalDispatcher
+
+      const useAction = derivePartialStateAction(
+        useOriginalDispatcher,
+        state => state.value,
+        (prev, value) => ({...prev, value}),
+        () => (prev => prev + 1)
+      )
+
+      useAction()
+
+      expect(originalDispatcher).toHaveBeenCalledTimes(1)
+      expect(mockState.value).toEqual({other: '-', value: 1})
+    })
+
+    test('should generate action function with parameters', () => {
+      const useOriginalDispatcher = () => originalDispatcher
+
+      const useAction = derivePartialStateAction(
+        useOriginalDispatcher,
+        state => state.value,
+        (prev, value) => ({...prev, value}),
+        (inc: number) => (prev => prev + inc)
+      )
+
+      useAction(1)
+      useAction(3)
+
+      expect(originalDispatcher).toHaveBeenCalledTimes(2)
+      expect(mockState.value).toEqual({other: '-', value: 4})
+    })
+  })
+
+  describe('derivePropStateAction', () => {
+    test('should generate action function', () => {
+      const useOriginalDispatcher = () => originalDispatcher
+
+      const useAction = derivePropStateAction(
+        useOriginalDispatcher,
+        'value',
+        () => (prev => prev + 1)
+      )
+
+      useAction()
+
+      expect(originalDispatcher).toHaveBeenCalledTimes(1)
+      expect(mockState.value).toEqual({other: '-', value: 1})
+    })
+
+    test('should generate action function with parameters', () => {
+      const useOriginalDispatcher = () => originalDispatcher
+
+      const useAction = derivePropStateAction(
+        useOriginalDispatcher,
+        'value',
+        (inc: number) => (prev => prev + inc)
+      )
+
+      useAction(1)
+      useAction(3)
+
+      expect(originalDispatcher).toHaveBeenCalledTimes(2)
+      expect(mockState.value).toEqual({other: '-', value: 4})
     })
   })
 })
