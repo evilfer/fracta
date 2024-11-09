@@ -1,0 +1,12 @@
+src
+
+tsconfig.*
+eslint.*
+jest.*
+package-lock.json
+
+node_modules
+coverage
+dist/demo-page
+
+.idea

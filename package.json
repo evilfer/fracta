@@ -1,0 +1,47 @@
+{
+  "name": "fracta",
+  "author": {
+    "name": "Eloy Villasclaras",
+    "email": "eloy.villasclaras@gmail.com"
+  },
+  "version": "0.0.1",
+  "main": "dist/lib/index.js",
+  "scripts": {
+    "validate-types": "tsc -p tsconfig.validate.json",
+    "build": "rm -rf dist && tsc -p tsconfig.build.json --sourceMap false --outDir dist",
+    "test": "jest --coverage --collectCoverageFrom='src/lib/**/*.{ts,tsx}'",
+    "demo:dev": "esbuild src/demo-page/index.tsx --bundle --sourcemap --outfile=src/demo-page/bundle.js --watch --servedir=src/demo-page",
+    "lint": "eslint"
+  },
+  "keywords": [
+    "fracta",
+    "react",
+    "state"
+  ],
+  "license": "MIT",
+  "description": "Lightweight, decentralised, performant app state management library.",
+  "homepage": "https://github.com/evilfer/fracta",
+  "repository": "github:evilfer/fracta",
+  "bugs": "https://github.com/evilfer/fracta/issues",
+  "devDependencies": {
+    "@eslint/js": "9.14.0",
+    "@testing-library/dom": "10.4.0",
+    "@testing-library/jest-dom": "6.6.3",
+    "@testing-library/react": "16.0.1",
+    "@types/eslint__js": "8.42.3",
+    "@types/jest": "29.5.14",
+    "@types/react": "18.3.12",
+    "@types/react-dom": "18.3.1",
+    "esbuild": "0.24.0",
+    "eslint": "9.14.0",
+    "jest": "29.7.0",
+    "jest-environment-jsdom": "29.7.0",
+    "ts-jest": "29.2.5",
+    "ts-node": "10.9.2",
+    "typescript": "5.6.3",
+    "typescript-eslint": "8.13.0"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0 || ^19.0,0"
+  }
+}
