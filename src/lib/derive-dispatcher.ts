@@ -2,7 +2,11 @@ import {Dispatch, SetStateAction} from "react";
 import {PropRecordContainer, StateSetterHook} from "./types";
 
 
-export function derivePartialStateDispatch<T, S>(dispatcher: Dispatch<SetStateAction<T>>, selector: (value: T) => S, join: (full: T, updated: S) => T): Dispatch<SetStateAction<S>> {
+export function derivePartialStateDispatch<T, S>(
+  dispatcher: Dispatch<SetStateAction<T>>,
+  selector: (value: T) => S,
+  join: (full: T, updated: S) => T
+): Dispatch<SetStateAction<S>> {
   return (updater: SetStateAction<S>) => {
     dispatcher(prev => {
       const partial = selector(prev)
@@ -12,8 +16,14 @@ export function derivePartialStateDispatch<T, S>(dispatcher: Dispatch<SetStateAc
   }
 }
 
-export function derivePropStateDispatch<Prop extends string, T extends PropRecordContainer<Prop, T>>(dispatcher: Dispatch<SetStateAction<T>>, key: Prop) {
-  return derivePartialStateDispatch(dispatcher, v => v[key], (full, partial) => ({...full, [key]: partial}))
+export function derivePropStateDispatch<Prop extends string, T extends PropRecordContainer<Prop, T>>(
+  dispatcher: Dispatch<SetStateAction<T>>,
+  key: Prop,
+  join?: (full: T, updated: T[Prop]) => T
+) {
+  return derivePartialStateDispatch(
+    dispatcher, v => v[key],
+    join || ((full, partial) => ({...full, [key]: partial})))
 }
 
 export function derivePartialStateUpdate<T, S>(useDispatch: StateSetterHook<T>, selector: (value: T) => S, join: (full: T, updated: S) => T): StateSetterHook<S> {
@@ -21,8 +31,12 @@ export function derivePartialStateUpdate<T, S>(useDispatch: StateSetterHook<T>, 
 }
 
 
-export function derivePropStateUpdate<Prop extends string, T extends PropRecordContainer<Prop, T>>(useDispatch: StateSetterHook<T>, key: Prop) {
-  return () => derivePropStateDispatch<Prop, T>(useDispatch(), key)
+export function derivePropStateUpdate<Prop extends string, T extends PropRecordContainer<Prop, T>>(
+  useDispatch: StateSetterHook<T>,
+  key: Prop,
+  join?: (full: T, updated: T[Prop]) => T
+) {
+  return () => derivePropStateDispatch<Prop, T>(useDispatch(), key, join)
 }
 
 export function deriveStateAction<T, F extends (...args: Parameters<F>) => SetStateAction<T>>(useDispatch: StateSetterHook<T>, action: F): (...args: Parameters<F>) => void {

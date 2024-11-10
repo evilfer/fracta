@@ -1,7 +1,8 @@
 import {
   derivePartialStateAction,
   derivePartialStateDispatch,
-  derivePartialStateUpdate, derivePropStateAction,
+  derivePartialStateUpdate,
+  derivePropStateAction,
   derivePropStateDispatch,
   derivePropStateUpdate,
   deriveStateAction
@@ -88,6 +89,25 @@ describe('combine dispatchers', () => {
 
       useDispatcher()(prev => prev + 2)
       expect(mockState.value).toEqual({other: '-', value: 15})
+    })
+
+    test('should generate partial setter with specific join function', () => {
+      const useOriginalDispatcher = () => originalDispatcher
+
+      const useDispatcher = derivePropStateUpdate(
+        useOriginalDispatcher,
+        'value',
+        (prev, value) => ({
+          other: `${prev.other} => ${value}`,
+          value
+        })
+      )
+
+      useDispatcher()(13)
+      expect(mockState.value).toEqual({other: '- => 13', value: 13})
+
+      useDispatcher()(prev => prev + 2)
+      expect(mockState.value).toEqual({other: '- => 13 => 15', value: 15})
     })
   })
 

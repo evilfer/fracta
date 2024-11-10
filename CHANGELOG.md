@@ -1,3 +1,8 @@
+## 0.0.5 (November 10, 2024)
+
+- Updated helper `derivePropStateUpdate`, adding optional parameter for complex state updates, where updates to the
+  selected property have an effect on other properties.
+
 ## 0.0.4 (November 9, 2024)
 
 - Fixed issue with published package contents.
