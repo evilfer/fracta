@@ -1,11 +1,12 @@
 import React from "react";
-import {createFractaStore, derivePropSelector, derivePropStateUpdate} from "../lib";
+import {createFractaStore, derivePropSelector, derivePropStateAction, derivePropStateUpdate} from "../lib";
 
 
 const [Provider, useSelect, useDispatch] = createFractaStore({count: 1, name: 'world', count2: 10})
 
 const useUpdateCount = derivePropStateUpdate(useDispatch, 'count')
 const useCount = derivePropSelector(useSelect, 'count')
+const useIncCount = derivePropStateAction(useDispatch, 'count', () => prev => prev + 1)
 
 export function App() {
   return (
@@ -48,6 +49,7 @@ function Child3() {
   const value1 = useCount()
   const value2 = useSelect(v => v.count2)
   const dispatch = useDispatch()
+  const incCount = useIncCount()
 
   return <div>
     {value1} {value2}
@@ -57,5 +59,6 @@ function Child3() {
       count2: prev.count2 + 1
     }))}>clickme
     </button>
+    <button onClick={incCount}>inc count action</button>
   </div>
 }

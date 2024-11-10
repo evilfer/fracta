@@ -1,6 +1,11 @@
 import React, {useState} from "react";
 import {createFractaStore, initDefaultContextValue} from "./create-app-state";
-import {derivePropStateUpdate} from "./derive-dispatcher";
+import {
+  derivePartialStateAction,
+  derivePropStateAction,
+  derivePropStateUpdate,
+  deriveStateAction
+} from "./derive-dispatcher";
 import {deriveStateSelector} from "./derive-selector";
 import {fireEvent, render} from "@testing-library/react";
 import '@testing-library/jest-dom';
@@ -438,6 +443,117 @@ describe('create app state', () => {
       expect(Consumer).toHaveBeenCalledTimes(1)
       expect(Wrapper).not.toHaveBeenCalled()
       expect(getByTestId('consumer-value')).toHaveTextContent('2')
+    })
+
+    test("should use action", () => {
+      const [Provider, useSelect, useUpdate] = createFractaStore({value: 10})
+
+      const useSelectValue = deriveStateSelector(useSelect, state => state.value)
+      const useUpdateAction = deriveStateAction(useUpdate, () => ({value: 11}))
+
+      const Consumer = jest.fn(() => {
+        const value = useSelectValue()
+        return <div data-testid={'consumer-root'}>{value}</div>
+      })
+
+      const Updater = jest.fn(() => {
+        const update = useUpdateAction()
+        return <button data-testid={'updater-button'} onClick={update}>update</button>
+      })
+
+      const {getByTestId} = render(
+        <Provider>
+          <Consumer/>
+          <Updater/>
+        </Provider>
+      )
+
+      expect(Consumer).toHaveBeenCalledTimes(1)
+      expect(Updater).toHaveBeenCalledTimes(1)
+      expect(getByTestId('consumer-root')).toHaveTextContent('10')
+
+      fireEvent.click(getByTestId('updater-button'))
+
+      expect(Consumer).toHaveBeenCalledTimes(2)
+      expect(Updater).toHaveBeenCalledTimes(1)
+      expect(getByTestId('consumer-root')).toHaveTextContent('11')
+    })
+
+    test("should use partial action", () => {
+      const [Provider, useSelect, useUpdate] = createFractaStore({value: 10})
+
+      const useSelectValue = deriveStateSelector(useSelect, state => state.value)
+      const useUpdateAction = derivePartialStateAction(
+        useUpdate,
+        state => state.value,
+        (state, value) => ({...state, value}),
+        () => prev => prev + 1
+      )
+
+      const Consumer = jest.fn(() => {
+        const value = useSelectValue()
+        return <div data-testid={'consumer-root'}>{value}</div>
+      })
+
+      const Updater = jest.fn(() => {
+        const update = useUpdateAction()
+        return <button data-testid={'updater-button'} onClick={update}>update</button>
+      })
+
+      const {getByTestId} = render(
+        <Provider>
+          <Consumer/>
+          <Updater/>
+        </Provider>
+      )
+
+      expect(Consumer).toHaveBeenCalledTimes(1)
+      expect(Updater).toHaveBeenCalledTimes(1)
+      expect(getByTestId('consumer-root')).toHaveTextContent('10')
+
+      fireEvent.click(getByTestId('updater-button'))
+
+      expect(Consumer).toHaveBeenCalledTimes(2)
+      expect(Updater).toHaveBeenCalledTimes(1)
+      expect(getByTestId('consumer-root')).toHaveTextContent('11')
+    })
+
+    test("should use prop action", () => {
+      const [Provider, useSelect, useUpdate] = createFractaStore({value: 10})
+
+      const useSelectValue = deriveStateSelector(useSelect, state => state.value)
+      const useUpdateAction = derivePropStateAction(
+        useUpdate,
+        'value',
+        () => prev => prev + 1
+      )
+
+      const Consumer = jest.fn(() => {
+        const value = useSelectValue()
+        return <div data-testid={'consumer-root'}>{value}</div>
+      })
+
+      const Updater = jest.fn(() => {
+        const update = useUpdateAction()
+        return <button data-testid={'updater-button'} onClick={update}>update</button>
+      })
+
+      const {getByTestId} = render(
+        <Provider>
+          <Consumer/>
+          <Updater/>
+        </Provider>
+      )
+
+      expect(Consumer).toHaveBeenCalledTimes(1)
+      expect(Updater).toHaveBeenCalledTimes(1)
+      expect(getByTestId('consumer-root')).toHaveTextContent('10')
+
+      fireEvent.click(getByTestId('updater-button'))
+
+      expect(Consumer).toHaveBeenCalledTimes(2)
+      expect(Updater).toHaveBeenCalledTimes(1)
+      expect(getByTestId('consumer-root')).toHaveTextContent('11')
     })
   })
 })

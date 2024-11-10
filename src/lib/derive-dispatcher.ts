@@ -40,7 +40,10 @@ export function derivePropStateUpdate<Prop extends string, T extends PropRecordC
 }
 
 export function deriveStateAction<T, F extends (...args: Parameters<F>) => SetStateAction<T>>(useDispatch: StateSetterHook<T>, action: F): () => (...args: Parameters<F>) => void {
-  return () => (...args) => useDispatch()(action(...args))
+  return () => {
+    const dispatch = useDispatch()
+    return (...args) => dispatch(action(...args))
+  }
 }
 
 export function derivePartialStateAction<T, S, F extends (...args: Parameters<F>) => SetStateAction<S>>(
@@ -49,9 +52,10 @@ export function derivePartialStateAction<T, S, F extends (...args: Parameters<F>
   join: (full: T, updated: S) => T,
   action: F
 ): () => (...args: Parameters<F>) => void {
-  return () => (...args) => {
-    const dispatch = derivePartialStateDispatch(useDispatch(), selector, join)
-    dispatch(action(...args))
+  const useActionDispatch = derivePartialStateUpdate(useDispatch, selector, join)
+  return () => {
+    const dispatch = useActionDispatch()
+    return (...args) => dispatch(action(...args))
   }
 }
 
@@ -60,8 +64,9 @@ export function derivePropStateAction<Prop extends string, T extends PropRecordC
   prop: Prop,
   action: F
 ): () => (...args: Parameters<F>) => void {
-  return () => (...args) => {
-    const dispatch = derivePropStateDispatch(useDispatch(), prop);
-    dispatch(action(...args))
+  const useActionDispatch = derivePropStateUpdate(useDispatch, prop)
+  return () => {
+    const dispatch = useActionDispatch()
+    return (...args) => dispatch(action(...args))
   }
 }

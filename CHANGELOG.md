@@ -1,3 +1,7 @@
+## 0.0.7 (November 10, 2024)
+
+- Fixed bug with action helpers.
+
 ## 0.0.6 (November 10, 2024)
 
 - Refactored action helpers, so they behave like regular react hooks.
