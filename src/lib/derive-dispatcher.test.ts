@@ -117,7 +117,8 @@ describe('combine dispatchers', () => {
 
       const useAction = deriveStateAction(useOriginalDispatcher, () => (prev => ({...prev, value: prev.value + 1})))
 
-      useAction()
+      const action = useAction()
+      action()
 
       expect(originalDispatcher).toHaveBeenCalledTimes(1)
       expect(mockState.value).toEqual({other: '-', value: 1})
@@ -131,8 +132,10 @@ describe('combine dispatchers', () => {
         value: prev.value + inc
       })))
 
-      useAction(1)
-      useAction(3)
+      const action = useAction()
+
+      action(1)
+      action(3)
 
       expect(originalDispatcher).toHaveBeenCalledTimes(2)
       expect(mockState.value).toEqual({other: '-', value: 4})
@@ -150,7 +153,8 @@ describe('combine dispatchers', () => {
         () => (prev => prev + 1)
       )
 
-      useAction()
+      const action = useAction()
+      action()
 
       expect(originalDispatcher).toHaveBeenCalledTimes(1)
       expect(mockState.value).toEqual({other: '-', value: 1})
@@ -166,8 +170,10 @@ describe('combine dispatchers', () => {
         (inc: number) => (prev => prev + inc)
       )
 
-      useAction(1)
-      useAction(3)
+      const action = useAction()
+
+      action(1)
+      action(3)
 
       expect(originalDispatcher).toHaveBeenCalledTimes(2)
       expect(mockState.value).toEqual({other: '-', value: 4})
@@ -184,7 +190,8 @@ describe('combine dispatchers', () => {
         () => (prev => prev + 1)
       )
 
-      useAction()
+      const action = useAction()
+      action()
 
       expect(originalDispatcher).toHaveBeenCalledTimes(1)
       expect(mockState.value).toEqual({other: '-', value: 1})
@@ -199,8 +206,10 @@ describe('combine dispatchers', () => {
         (inc: number) => (prev => prev + inc)
       )
 
-      useAction(1)
-      useAction(3)
+      const action = useAction()
+
+      action(1)
+      action(3)
 
       expect(originalDispatcher).toHaveBeenCalledTimes(2)
       expect(mockState.value).toEqual({other: '-', value: 4})

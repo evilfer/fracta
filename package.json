@@ -4,7 +4,7 @@
     "name": "Eloy Villasclaras",
     "email": "eloy.villasclaras@gmail.com"
   },
-  "version": "0.0.5",
+  "version": "0.0.6",
   "main": "dist/lib/index.js",
   "scripts": {
     "validate-types": "tsc -p tsconfig.validate.json",

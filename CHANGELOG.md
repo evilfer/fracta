@@ -1,3 +1,7 @@
+## 0.0.6 (November 10, 2024)
+
+- Refactored action helpers, so they behave like regular react hooks.
+
 ## 0.0.5 (November 10, 2024)
 
 - Updated helper `derivePropStateUpdate`, adding optional parameter for complex state updates, where updates to the
