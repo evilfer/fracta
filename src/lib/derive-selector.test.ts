@@ -1,4 +1,4 @@
-import {derivePropSelector, deriveStateSelector} from "./derive-selector";
+import {deriveParametricSelector, derivePropSelector, deriveStateSelector} from "./derive-selector";
 import {StateSelectHook} from "./types";
 
 
@@ -52,6 +52,22 @@ describe('combine selectors', () => {
       const result = useNameSelect()
       expect(useStateSelect).toHaveBeenCalledTimes(1)
       expect(result).toBe('fracta')
+    })
+  })
+
+  describe('deriveParametricSelector', () => {
+    test('should generate selector based on any parameters', () => {
+      const useStateSelect = jest.fn(<S>(selector: (state: {
+        count: number,
+        name: string
+      }) => S) => selector({count: 10, name: 'fracta'})) as StateSelectHook<{ count: number, name: string }>
+
+      const useParametricSelect = deriveParametricSelector(useStateSelect, (delta: number) => (state) => state.count + delta)
+
+      const result = useParametricSelect(1)
+
+      expect(useStateSelect).toHaveBeenCalledTimes(1)
+      expect(result).toBe(11)
     })
   })
 })

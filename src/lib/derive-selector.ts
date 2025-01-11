@@ -10,3 +10,13 @@ export function deriveStateSelector<T, S>(useSelect: StateSelectHook<T>, selecto
 export function derivePropSelector<Prop extends string, T extends PropRecordContainer<Prop, T>>(useSelect: StateSelectHook<T>, key: Prop) {
   return deriveStateSelector(useSelect, v => v[key])
 }
+
+export function deriveParametricSelector<T, R, S extends (state: T) => R, F extends (...args: Parameters<F>) => S>(
+  useSelect: StateSelectHook<T>,
+  createSelector: F
+): (...args: Parameters<F>) => ReturnType<ReturnType<F>> {
+  return (...args) => {
+    const selector = createSelector(...args)
+    return useSelect(selector) as ReturnType<ReturnType<F>>
+  }
+}

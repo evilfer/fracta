@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {Dispatch, SetStateAction, useState} from "react";
 import {createFractaStore, initDefaultContextValue} from "./create-app-state";
 import {
   derivePartialStateAction,
@@ -6,7 +6,7 @@ import {
   derivePropStateUpdate,
   deriveStateAction
 } from "./derive-dispatcher";
-import {deriveStateSelector} from "./derive-selector";
+import {deriveParametricSelector, deriveStateSelector} from "./derive-selector";
 import {fireEvent, render} from "@testing-library/react";
 import '@testing-library/jest-dom';
 
@@ -554,6 +554,78 @@ describe('create app state', () => {
       expect(Consumer).toHaveBeenCalledTimes(2)
       expect(Updater).toHaveBeenCalledTimes(1)
       expect(getByTestId('consumer-root')).toHaveTextContent('11')
+    })
+
+
+    test("should use parametric selector", () => {
+      const [Provider, useSelect, useUpdate] = createFractaStore({value: 10, name: 'a'})
+
+      const useDeltaValue = deriveParametricSelector(useSelect, (delta: number) => (state => state.value + delta))
+
+      const Consumer = jest.fn(({delta}: { delta: number }) => {
+        const value = useDeltaValue(delta)
+        return <div data-testid={'consumer-root'}>{value}</div>
+      })
+
+      const ValueUpdater = jest.fn(() => {
+        const update = useUpdate()
+        return (
+          <>
+            <button data-testid={'value-updater-button'}
+                    onClick={() => update(prev => ({...prev, value: prev.value + 1}))}>update store value
+            </button>
+            <button data-testid={'name-updater-button'}
+                    onClick={() => update(prev => ({...prev, name: prev.name + '!'}))}>update store name
+            </button>
+          </>
+        )
+      })
+
+      const DeltaUpdater = jest.fn(({setDelta}: {setDelta: Dispatch<SetStateAction<number>>}) => {
+        return <button data-testid={'delta-updater-button'} onClick={() => setDelta(prev => prev + 5)}>update
+          delta</button>
+      })
+
+      const App = () => {
+        const [delta, setDelta] = useState(1)
+
+        return (
+          <>
+            <ValueUpdater/>
+            <DeltaUpdater setDelta={setDelta}/>
+            <Consumer delta={delta}/>
+          </>
+        )
+
+      }
+
+      const {getByTestId} = render(
+        <Provider>
+          <App/>
+        </Provider>
+      )
+
+      expect(Consumer).toHaveBeenCalledTimes(1)
+      expect(ValueUpdater).toHaveBeenCalledTimes(1)
+      expect(DeltaUpdater).toHaveBeenCalledTimes(1)
+      expect(getByTestId('consumer-root')).toHaveTextContent('11')
+
+      fireEvent.click(getByTestId('value-updater-button'))
+
+      expect(Consumer).toHaveBeenCalledTimes(2)
+      expect(ValueUpdater).toHaveBeenCalledTimes(1)
+      expect(getByTestId('consumer-root')).toHaveTextContent('12')
+
+      fireEvent.click(getByTestId('name-updater-button'))
+
+      expect(Consumer).toHaveBeenCalledTimes(2)
+      expect(ValueUpdater).toHaveBeenCalledTimes(1)
+      expect(getByTestId('consumer-root')).toHaveTextContent('12')
+
+      fireEvent.click(getByTestId('delta-updater-button'))
+
+      expect(Consumer).toHaveBeenCalledTimes(3)
+      expect(getByTestId('consumer-root')).toHaveTextContent('17')
     })
   })
 })
