@@ -138,7 +138,7 @@ describe('create app state', () => {
 
       fireEvent.click(getByTestId('updater-button'))
       expect(Consumer).toHaveBeenCalledTimes(1)
-      expect(Consumer).toHaveBeenCalledWith({id: 'b'}, {})
+      expect(Consumer).toHaveBeenCalledWith({id: 'b'}, undefined)
       expect(getByTestId('consumer-root-a')).toHaveTextContent('10')
       expect(getByTestId('consumer-root-b')).toHaveTextContent('20')
     })
@@ -254,7 +254,7 @@ describe('create app state', () => {
       )
 
       expect(Consumer).toHaveBeenCalledTimes(1)
-      expect(Consumer).toHaveBeenCalledWith({inc: 1}, {})
+      expect(Consumer).toHaveBeenCalledWith({inc: 1}, undefined)
       expect(Wrapper).toHaveBeenCalledTimes(1)
       expect(selector).toHaveBeenCalledTimes(1)
       expect(selector).toHaveBeenCalledWith(1, {value: 10})
@@ -264,7 +264,7 @@ describe('create app state', () => {
 
       fireEvent.click(getByTestId('updater-button-a'))
       expect(Consumer).toHaveBeenCalledTimes(1)
-      expect(Consumer).toHaveBeenCalledWith({inc: 2}, {})
+      expect(Consumer).toHaveBeenCalledWith({inc: 2}, undefined)
       expect(Wrapper).toHaveBeenCalledTimes(1)
       expect(selector).toHaveBeenCalledTimes(2)
       expect(selector.mock.calls).toEqual([
@@ -277,7 +277,7 @@ describe('create app state', () => {
 
       fireEvent.click(getByTestId('updater-button-b'))
       expect(Consumer).toHaveBeenCalledTimes(1)
-      expect(Consumer).toHaveBeenCalledWith({inc: 3}, {})
+      expect(Consumer).toHaveBeenCalledWith({inc: 3}, undefined)
       expect(Wrapper).toHaveBeenCalledTimes(1)
       expect(selector).toHaveBeenCalledTimes(2)
       expect(selector.mock.calls).toEqual([
